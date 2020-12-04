@@ -1,3 +1,3 @@
 <?php
 
-echo up;
+echo "upp";
