@@ -7,10 +7,23 @@ on:
     branches: [ master ]
 
 jobs:
-  laravel-tests:
-
+  build-js:
+    name: Build Js/Css
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: actions/checkout@v2 # Download the source code
+      - name: NPM Build
+        run: |
+          npm install
+          npm run prod
+      - name: Upload build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets
+          path: public
+  
+  laravel-tests:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Copy .env
