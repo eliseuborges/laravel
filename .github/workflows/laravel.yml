@@ -54,6 +54,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Git Semantic Version
+      # You may pin to the exact commit or the version.
+      # uses: PaulHatch/semantic-version@1f05445eedfefd72938a40281fa9118ea3204664
+      uses: PaulHatch/semantic-version@v3.1.2
+      with:
+        # The branch name
+        branch: # default is master
+        # The prefix to use to identify tags
+        tag_prefix: # optional, default is v
+        # A string which, if present in a git commit, indicates that a change represents a major (breaking) change
+        major_pattern: # default is (MAJOR)
+        # A string which, if present in a git commit, indicates that a change represents a minor (feature) change
+        minor_pattern: # default is (MINOR)
+        # Pattern to use when formatting output version
+        format: # default is ${major}.${minor}.${patch}
+        # Path to check for changes. If any changes are detected in the path the 'changed' output will true. Enter multiple paths separated by spaces.
+        change_path: # optional
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
