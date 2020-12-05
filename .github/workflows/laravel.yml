@@ -65,10 +65,6 @@ jobs:
           minor_pattern: "(MINOR)"
           # A string to determine the format of the version output
           format: "${major}.${minor}.${patch}-prerelease.${increment}"
-          # Optional path to check for changes. If any changes are detected in the path the
-          # 'changed' output will true. Enter multiple paths separated by spaces.
-          change_path: "src/my-service"
-          # Named version, will be used as suffix for name version tag
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
@@ -77,24 +73,7 @@ jobs:
         run: php artisan key:generate
 #      - name: Directory Permissions
 #        run: chmod -R 777 storage bootstrap/cache
-      - name: Set outputs
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${major}.${minor}.${patch}-prerelease.${increment}
-          release_name: Release ${{ steps.vars.outputs.sha_short }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
-  
+     
 #  deploy:
 #    name: Deploy to Production
 #    runs-on: ubuntu-latest
