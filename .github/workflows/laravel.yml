@@ -3,92 +3,89 @@ name: Laravel
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
 
 jobs:
-  build-js:
-    name: Build Js/Css
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2 # Download the source code
-      - name: NPM Build
-        run: |
-          npm install
-          npm run prod
-      - name: Upload build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: public
+#  build-js:
+#    name: Build Js/Css
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2 # Download the source code
+#      - name: NPM Build
+#        run: |
+#          npm install
+#          npm run prod
+#      - name: Upload build files
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: assets
+#          path: public
   
-  tests:
-    name: Tests
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Dependency Check
-      uses: umutphp/sensiolabs-security-checker-action@v1
-    - name: Generate key
-      run: php artisan key:generate
+#  tests:
+#    name: Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Copy .env
+#      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+#    - name: Install Dependencies
+#      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+#    - name: Dependency Check
+#      uses: umutphp/sensiolabs-security-checker-action@v1
+#    - name: Generate key
+#      run: php artisan key:generate
 #    - name: Directory Permissions
 #      run: chmod -R 777 storage bootstrap/cache
-    - name: Create Database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit
+#    - name: Create Database
+#      run: |
+#        mkdir -p database
+#        touch database/database.sqlite
+#    - name: Execute tests (Unit and Feature tests) via PHPUnit
+#      env:
+#        DB_CONNECTION: sqlite
+#        DB_DATABASE: database/database.sqlite
+#      run: vendor/bin/phpunit
   
   build:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [build-js, tests]
+#    needs: [build-js, tests] #####
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Version name
-        uses: paulhatch/semantic-version@v3.1.2
         with:
-          # The prefix to use to identify tags
+          fetch-depth: 0
+      
+ #     - name: Copy .env
+ #       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+ #     - name: Install Dependencies
+ #       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+ #     - name: Generate key
+ #       run: php artisan key:generate
+      
+      - name: Git Semantic Version
+        id: semantic_version
+        uses: PaulHatch/semantic-version@v3.1.2
+        with:
           tag_prefix: "v"
-          # A string which, if present in a git commit, indicates that a change represents a
-          # major (breaking) change
-          major_pattern: "(MAJOR)"
-          # Same as above except indicating a minor change
-          minor_pattern: "(MINOR)"
-          # A string to determine the format of the version output
-          format: "${major}.${minor}.${patch}-prerelease.${increment}"
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Generate key
-        run: php artisan key:generate
-#      - name: Directory Permissions
-#        run: chmod -R 777 storage bootstrap/cache
-   
+          format: "v${major}.${minor}.${patch}"
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${major}.${minor}.${patch}-prerelease.${increment}
-          release_name: ${major}.${minor}.${patch}-prerelease.${increment}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          tag_name: ${{ steps.semantic_version.outputs.version }}
+          release_name: ${{ steps.semantic_version.outputs.version }}
+#          body: | 
+#            Release Notes:
+#            - Change 1
+#            - Change 2
           draft: false
-          prerelease: false  
+          prerelease: false
+
 #  deploy:
 #    name: Deploy to Production
 #    runs-on: ubuntu-latest
