@@ -51,7 +51,7 @@ jobs:
       - name: NPM Build
         run: |
           npm install
-          npm run prod
+          npm run production
       - name: Upload build files
         uses: actions/upload-artifact@v2
         with:
@@ -70,6 +70,11 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
         run: php artisan key:generate
+      - name: Upload build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: files
+          path: .
   
   
   release:
