@@ -92,8 +92,13 @@ jobs:
         with:
           tag_prefix: "v"
           format: "v${major}.${minor}.${patch}"      
-      - run: 'echo "${{ steps.semantic_version.outputs.version }}" > .VERSION.txt'
-        shell: bash
+      - uses: DamianReeves/write-file-action
+        with:
+          path: .version
+          contents: |
+            echo ${{ steps.semantic_version.outputs.version }}"
+          write-mode: overwrite
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
