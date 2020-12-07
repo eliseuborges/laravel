@@ -43,7 +43,7 @@ jobs:
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
 
-  build-fontend:
+  build-frontend:
     name: Build Front-End
     runs-on: ubuntu-latest
     steps:
