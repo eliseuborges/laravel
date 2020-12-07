@@ -92,6 +92,13 @@ jobs:
         with:
           tag_prefix: "v"
           format: "v${major}.${minor}.${patch}"      
+      
+      - run: echo ${{ steps.semantic_version.outputs.version }} > .VERSION.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: .VERSION.txt
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -106,7 +113,7 @@ jobs:
 #            - Change 2
           draft: false
           prerelease: false
-      - run: echo ${{ steps.semantic_version.outputs.version }} > .VERSION.txt
+      
 #  deploy:
 #    name: Deploy to Production
 #    runs-on: ubuntu-latest
