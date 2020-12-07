@@ -94,12 +94,12 @@ jobs:
           format: "v${major}.${minor}.${patch}"  
       
       - name: Writing version file
-        uses: DamianReeves/write-file-action
+        run: echo "${{steps.semantic_version.outputs.version}} > .version"
+      - name: Upload Version file
+        uses: actions/upload-artifact@v2
         with:
+          name: version file
           path: .version
-          contents: |
-            echo "${{ steps.semantic_version.outputs.version }}"
-          write-mode: overwrite
       
       - name: Create Release
         id: create_release
