@@ -93,13 +93,10 @@ jobs:
           tag_prefix: "v"
           format: "v${major}.${minor}.${patch}"  
       
-      - name: Writing version file
-        run: echo "${{steps.semantic_version.outputs.version}} > .version"
-      - name: Upload Version file
-        uses: actions/upload-artifact@v2
+      - run: echo "${{steps.semantic_version.outputs.version}} > .version"
+      - uses: actions/upload-artifact@v2
         with:
-          name: version file
-          path: .version
+          path: ${{ github.workspace }}/.version
       
       - name: Create Release
         id: create_release
