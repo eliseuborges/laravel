@@ -1,6 +1,15 @@
 name: Laravel
 
 on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Name of version  (ie 5.5.0)'
+        required: true
+      versionCode:
+        description: 'Version number (50500)'
+        required: true
+        
   push:
     branches: [ master ]
 #  pull_request:
