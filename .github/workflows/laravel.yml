@@ -69,7 +69,7 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
-        run: php artisan key:generate#
+        run: php artisan key:generate
 #      - name: Upload build files
 #        uses: actions/upload-artifact@v2
 #        with:
