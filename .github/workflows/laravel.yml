@@ -1,14 +1,14 @@
 name: Laravel
 
 on:
-  workflow_dispatch:
-    inputs:
-      versionName:
-        description: 'Name of version  (ie 5.5.0)'
-        required: true
-      versionCode:
-        description: 'Version number (50500)'
-        required: true
+#  workflow_dispatch:
+#    inputs:
+#      versionName:
+#        description: 'Name of version  (ie 5.5.0)'
+#        required: true
+#      versionCode:
+#        description: 'Version number (50500)'
+#        required: true
         
   push:
     branches: [ master ]
@@ -91,13 +91,7 @@ jobs:
         uses: PaulHatch/semantic-version@v3.1.2
         with:
           tag_prefix: "v"
-          format: "v${major}.${minor}.${patch}"  
-      
-      - run: echo "${{steps.semantic_version.outputs.version}} > .version"
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/.version
-      
+          format: "v${major}.${minor}.${patch}"      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
